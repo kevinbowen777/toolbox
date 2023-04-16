@@ -287,7 +287,9 @@ You can also use the expression `-ok`. It is the same a the `-exec` option, exce
 
 ##### Running a Command in Starting Directory
 
+
 The two expressions `-execdir` and `-okdir` work like `-exec` and `-ok` respectively, except that the commands won’t run in your current working directory, but in the starting directory (the first argument of find).
+
 
     find topdir1/dir_b -exec bash -c 'basename "${0%*.}"' '{}' \;
     
@@ -298,7 +300,7 @@ Convert every jpg file in the `topdir1` directory, create new ones (in black & w
 Rename every jpg file in the `topdir1` directory with `_old` and keep same extension:
 
     find topdir1 -name "image.jpg" -type f -execdir rename 's/\.jpg$/_old.jpg/' {} \;
-    
+ 
 ##### Changing the Output
 
 The following options will change the output of the search results:
@@ -330,23 +332,23 @@ implicity between each expression.
 
 ### Examples
 
-    * [Find command structure](#find-command-structure)
-    * [Basic `find` file commands](#basic-`find`-file-commands)
-    * [Case insensitive search](#case-insensitive-search)
-    * [Search multiple dirs](#search-multiple-dirs)
-    * [Files with different extensions](#files-with-different-extensions)
-    * [Files that don't match a pattern (-not)](#files-that-don't-match-a-pattern-(-not))
-    * [Files by text in the file (find + grep)](#files-by-text-in-the-file-(find-+-grep))
-    * [5 lines before, 10 lines after grep matches](#5-lines-before,-10-lines-after-grep-matches)
-    * [Files and act on them (find + exec)](#files-and-act-on-them-(find-+-exec))
-    * [Find and copy](#find-and-copy)
-    * [Copy one file to many directories](#copy-one-file-to-many-directories)
-    * [Find and delete](#find-and-delete)
-    * [Files by modification time](#files-by-modification-time)
-    * [By modification time using a temp file](#by-modification-time-using-a-temp-file)
-    * [find and tar](#find-and-tar)
-    * [find, tar, and xargs](#find,-tar,-and-xargs)
-    * [Rename](#rename)
+  * [Find command structure](#find-command-structure)
+  * [Basic `find` file commands](#basic-`find`-file-commands)
+  * [Case insensitive search](#case-insensitive-search)
+  * [Search multiple dirs](#search-multiple-dirs)
+  * [Files with different extensions](#files-with-different-extensions)
+  * [Files that don't match a pattern (-not)](#files-that-don't-match-a-pattern-(-not))
+  * [Files by text in the file (find + grep)](#files-by-text-in-the-file-(find-+-grep))
+  * [5 lines before, 10 lines after grep matches](#5-lines-before,-10-lines-after-grep-matches)
+  * [Files and act on them (find + exec)](#files-and-act-on-them-(find-+-exec))
+  * [Find and copy](#find-and-copy)
+  * [Copy one file to many directories](#copy-one-file-to-many-directories)
+  * [Find and delete](#find-and-delete)
+  * [Files by modification time](#files-by-modification-time)
+  * [By modification time using a temp file](#by-modification-time-using-a-temp-file)
+  * [find and tar](#find-and-tar)
+  * [find, tar, and xargs](#find,-tar,-and-xargs)
+  * [Rename](#rename)
 
 The following examples make up the `find` command cookbook
 
@@ -452,6 +454,7 @@ its respective elements:
 
     find . -name "folder.jpg" -type f -execdir mv {} cover.jpg \;
     find ~ -iname "*new*" -exec mv -v '{}' /media/current-projects/ \;
+    find . -type f -name "*.wiki" -exec rename 's/\.wiki$/.md/' '{}' \;
 
 ---
 
