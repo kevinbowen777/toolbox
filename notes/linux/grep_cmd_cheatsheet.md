@@ -75,23 +75,29 @@ As with all items outlined here, refer to [`man grep`](https://manned.org/grep) 
 
 ### Examples
 
-    * [search for a string in one or more files](#search-for-a-string-in-one-or-more-files)
-    * [case-insensitive](#case-insensitive)
-    * [regular expressions](#regular-expressions)
-    * [display matching filenames, not lines](#display-matching-filenames,-not-lines)
-    * [show matching line numbers](#show-matching-line-numbers)
-    * [lines before and after grep match](#lines-before-and-after-grep-match)
-    * [reverse the meaning](#reverse-the-meaning)
-    * [grep in a pipeline](#grep-in-a-pipeline)
-    * [search for multiple patterns](#search-for-multiple-patterns)
+    * [Search for string in one or more files](#search-for-string-in-one-or-more-files)
+    * [Case-insensitive pattern](#case-insensitive-pattern)
+    * [Display pattern only](#display-pattern-only)
+    * [Output match count](#output-match-count)
+    * [Exclude Files](#exclude-files)
+    * [Regular expressions](#regular-expressions)
+    * [Display matching filenames only](#display-matching-filenames-only)
+    * [Hide filenames](#hide-filenames)
+    * [Display only filenames without matches](#display-only-filenames-without-matches)
+    * [Output line numbers](#output-line-numbers)
+    * [Display lines before and after match](#display-lines-before-and-after-match)
+    * [Output lines with pattern not matched](#output-lines-with-pattern-not-matched)
+    * [Using grep in a pipeline](#using-grep-in-a-pipeline)
+    * [Search for multiple patterns](#search-for-multiple-patterns)
     * [multiple search strings, multiple filename patterns](#multiple-search-strings,-multiple-filename-patterns)
     * [grep + find](#grep-+-find)
-    * [recursive grep search](#recursive-grep-search)
-    * [grep gzip files](#grep-gzip-files)
+    * [Recursive search](#recursive-search)
+    * [Search gzip files](#search-gzip-files)
+  * [Resources](#resources)
 
 The following examples make up the `grep` command cookbook
 
-#### search for a string in one or more files
+#### Search for string in one or more files
  
 ```
     grep 'kbowen' /etc/passwd   # search for lines containing 'kbowen' in /etc/passwd
@@ -99,13 +105,31 @@ The following examples make up the `grep` command cookbook
     grep import *.py            # search multiple files
 ```
 
-#### case-insensitive
+#### Case-insensitive pattern
  
 ```
     grep -i kbowen users.txt    # find kbowen, Kbowen, KBowen, KBOWEN, etc.
 ```
 
-#### regular expressions
+#### Display pattern only
+
+```
+    grep -o "upgrade" /var/log/dpkg.log     # Only print pattern not whole line
+```
+
+#### Output match count
+
+```
+    grep -c "upgrade" /var/log/dpkg.log     # Output only match count
+```
+
+#### Exclude Files
+
+```
+    grep "upgrade" --exclude="alternatives.log" /var/log/*.log
+```
+
+#### Regular expressions
  
 ```
     grep '^kbowen' /etc/passwd   # find 'kbowen', but only at the start of a line
@@ -113,18 +137,32 @@ The following examples make up the `grep` command cookbook
     grep '[0-9][0-9][0-9]' *     # find all lines in all files in the current dir with three numbers in a row
 ```
 
-#### display matching filenames, not lines
+#### Display matching filenames only
  
 ```
     grep -l import *.py    # show all filenames containing the string 'import'
     grep -il import *.py   # same thing, case-insensitive
 ```
 
-#### show matching line numbers
- 
-    grep -n we gettysburg-address.txt    # show line numbers as well as the matching lines
+#### Hide filenames
 
-#### lines before and after grep match
+```
+    grep -H "upgrade" /var/log/*.log
+```
+
+#### Display only filenames without matches
+
+```
+    grep -L "upgrade" /var/log/*.log
+```
+
+#### Output line numbers
+ 
+```
+    grep -n we gettysburg-address.txt    # show line numbers as well as the matching lines
+```
+
+#### Display lines before and after match
  
 ```
     grep -B5 "the living" gettysburg-address.txt        # show all matches, and five lines before each match
@@ -132,22 +170,23 @@ The following examples make up the `grep` command cookbook
     grep -B5 -A5 "the living" gettysburg-address.txt    # five lines before and ten lines after
 ```
 
-#### reverse the meaning
+#### Output lines with pattern not matched
  
 ```
     grep -v kbowen /etc/passwd      # find any line *not* containing 'kbowen'
     grep -vi kbowen /etc/passwd     # same thing, case-insensitive
 ```
 
-#### grep in a pipeline
+#### Using grep in a pipeline
  
 ```
     ps auxwww | grep urxvt          # all processes containing 'urxvt'
     ps auxwww | grep -i build        # all processes containing 'build', ignoring case
+    ps -ef | grep docker
     ls -al | grep '^d'              # list all dirs in the current dir
 ```
 
-#### search for multiple patterns
+#### Search for multiple patterns
  
 ```
     egrep -d skip 'exclude|registration' *  # search for multiple patterns, all files in current dir
@@ -172,7 +211,7 @@ See also:   http://alvinalexander.com/linux-unix/linux-egrep-multiple-regular-ex
     # print all filenames of files under current dir containing 'foo', case-insensitive
 ```
 
-#### recursive grep search
+#### Recursive search
  
 ```
     grep -rl 'null' .  # similar to the previous find command; does a recursive search
@@ -181,7 +220,7 @@ See also:   http://alvinalexander.com/linux-unix/linux-egrep-multiple-regular-ex
 ```
 See also:  http://alvinalexander.com/linux-unix/recursive-grep-r-searching-egrep-find 
 
-#### grep gzip files
+#### Search gzip files
  
 ```
     zgrep foo myfile.gz                      # all lines containing the pattern 'foo'
