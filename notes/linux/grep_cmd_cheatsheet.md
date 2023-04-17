@@ -28,7 +28,7 @@ The second part consists of practical examples of `grep` usages to solve specifi
 
 ### Description
     
-    `grep` searches for PATTERNS in each FILE. *PATTERNS* is one or more
+>    `grep` searches for PATTERNS in each FILE. *PATTERNS* is one or more
     patterns separated by newline characters, and `grep` prints each line that
     matches a pattern. Typically *PATTERNS* should be quoted when `grep` is used
     in a shell command.  
@@ -75,25 +75,24 @@ As with all items outlined here, refer to [`man grep`](https://manned.org/grep) 
 
 ### Examples
 
-    * [Search for string in one or more files](#search-for-string-in-one-or-more-files)
-    * [Case-insensitive pattern](#case-insensitive-pattern)
-    * [Display pattern only](#display-pattern-only)
-    * [Output match count](#output-match-count)
-    * [Exclude Files](#exclude-files)
-    * [Regular expressions](#regular-expressions)
-    * [Display matching filenames only](#display-matching-filenames-only)
-    * [Hide filenames](#hide-filenames)
-    * [Display only filenames without matches](#display-only-filenames-without-matches)
-    * [Output line numbers](#output-line-numbers)
-    * [Display lines before and after match](#display-lines-before-and-after-match)
-    * [Output lines with pattern not matched](#output-lines-with-pattern-not-matched)
-    * [Using grep in a pipeline](#using-grep-in-a-pipeline)
-    * [Search for multiple patterns](#search-for-multiple-patterns)
-    * [multiple search strings, multiple filename patterns](#multiple-search-strings,-multiple-filename-patterns)
-    * [grep + find](#grep-+-find)
-    * [Recursive search](#recursive-search)
-    * [Search gzip files](#search-gzip-files)
-  * [Resources](#resources)
+* [Search for string in one or more files](#search-for-string-in-one-or-more-files)
+* [Case-insensitive pattern](#case-insensitive-pattern)
+* [Display pattern only](#display-pattern-only)
+* [Output match count](#output-match-count)
+* [Exclude Files](#exclude-files)
+* [Regular expressions](#regular-expressions)
+* [Display matching filenames only](#display-matching-filenames-only)
+* [Hide filenames](#hide-filenames)
+* [Display only filenames without matches](#display-only-filenames-without-matches)
+* [Output line numbers](#output-line-numbers)
+* [Display lines before and after match](#display-lines-before-and-after-match)
+* [Output lines with pattern not matched](#output-lines-with-pattern-not-matched)
+* [Using grep in a pipeline](#using-grep-in-a-pipeline)
+* [Search for multiple patterns](#search-for-multiple-patterns)
+* [multiple search strings, multiple filename patterns](#multiple-search-strings,-multiple-filename-patterns)
+* [grep + find](#grep-+-find)
+* [Recursive search](#recursive-search)
+* [Search gzip files](#search-gzip-files)
 
 The following examples make up the `grep` command cookbook
 
