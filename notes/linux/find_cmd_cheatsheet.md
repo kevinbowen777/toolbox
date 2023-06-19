@@ -200,20 +200,26 @@ The `-empty` option will search only empty files and directories. It does not ne
 
 The expression `-name <value>` filter files and directories by filename. Regular expressions are not allowed for the `<value>`, but shell patterns (also called *glob operators*) are permitted, such as `*`, `?`, or `[]`.
 
+```
     find . -name '*.txt'
     find . -name 'image.jpg'
+```
 
 ##### Filtering by File Path
 
 The expression `-path <value>` filters files and directories by their file paths. Like `-name`, it does not accept regular expressions but shell patterns.
 
+```
     find . -path '**/topdir1/*.jpg'
+```
     
 ##### Filtering Using a Regex
 
 File name matches regular expression *pattern* using `-regex <value>`. This is a match on the whole path, not a search. For example, to match a file named *./fubar*, you can use the regular expression `.*bar.` or `.*b.*3`, but not `f.*r3`
 
+```
     find . -regex '.*1.txt'
+```
     
 The *positional option* `-regextype` can be used before `-regex`, to specify the regex engine you want to use. To output a list of regex engines supported, run `find . -regextype dummy`. Example output:
 
@@ -226,7 +232,9 @@ valid types are ‘findutils-default’, ‘ed’, ‘emacs’, ‘gnu-awk’, �
 
 The following example will find every text and jpg file using `egrep`, the extended regular expresion engine(ERE):
 
+```
     find . -regextype "egrep" -regex '.*(txt|jpg)$'
+```
     
 ##### Case insensitive search
 
@@ -291,15 +299,15 @@ You can also use the expression `-ok`. It is the same a the `-exec` option, exce
 The two expressions `-execdir` and `-okdir` work like `-exec` and `-ok` respectively, except that the commands won’t run in your current working directory, but in the starting directory (the first argument of find).
 
 
+```
     find topdir1/dir_b -exec bash -c 'basename "${0%*.}"' '{}' \;
-    
-Convert every jpg file in the `topdir1` directory, create new ones (in black & white) with the suffix "_bw.jpg".
-
-    find topdir1 -name '*.jpg' -execdir bash -c 'convert $0 -colorspace Gray ${0%.*}_bw.jpg' {} ';'
+```
     
 Rename every jpg file in the `topdir1` directory with `_old` and keep same extension:
 
+```
     find topdir1 -name "image.jpg" -type f -execdir rename 's/\.jpg$/_old.jpg/' {} \;
+```
  
 ##### Changing the Output
 
@@ -341,6 +349,7 @@ implicity between each expression.
   * [Files by text in the file (find + grep)](#files-by-text-in-the-file-(find-+-grep))
   * [5 lines before, 10 lines after grep matches](#5-lines-before,-10-lines-after-grep-matches)
   * [Files and act on them (find + exec)](#files-and-act-on-them-(find-+-exec))
+  * [Find and replace(sed)](#find-and-replace(sed))
   * [Find and copy](#find-and-copy)
   * [Copy one file to many directories](#copy-one-file-to-many-directories)
   * [Find and delete](#find-and-delete)
@@ -367,6 +376,7 @@ its respective elements:
 
 ####  Basic `find` file commands
 
+```
     find / -name foo.txt -type f -print             # full command
     find / -name foo.txt -type f                    # -print isn't necessary
     find / -name foo.txt                            # don't have to specify "type==file"
@@ -374,6 +384,7 @@ its respective elements:
     find . -name "foo.*"                            # wildcard
     find . -name "*.txt"                            # wildcard
     find /users/al -name Cookbook -type d           # search '/users/al' dir
+```
 
 #### Case insensitive search
 
@@ -387,33 +398,51 @@ its respective elements:
 
 #### Files with different extensions
 
+```
     find . -type f \( -name "*.c" -o -name "*.sh" \) # "*.c" and "*.sh" files
     find . -type f \( -name "*cache" -o -name "*xml" -o -name "*html" \)   # three patterns
+```
 
 #### Files that don't match a pattern (-not)
 
+```
     find . -type f -not -name "*.html"   # find all files not ending in ".html"
+```
 
 #### Files by text in the file (find + grep)
 
+```
     find . -type f -name "*.java" -exec grep -l StringBuffer {} \;   # find StringBuffer in all *.java files
     find . -type f -name "*.java" -exec grep -il string {} \;  # ignore case with -i option
     find . -type f -name "*.gz" -exec zgrep 'GET /foo' {} \;   # search for a string in gzip'd files
+```
 
 #### 5 lines before, 10 lines after grep matches
 
+```
     find . -type f -name "*.scala" -exec grep -B5 -A10 'null' {} \;
+```
 
 #### Files and act on them (find + exec)
 
+```
     find /usr/local -name "*.html" -type f -exec chmod 644 {} \;   # change files to mode 644
     find htdocs cgi-bin -name "*.cgi" -type f -exec chmod 755 {} \;   # change files to mode 755
     find . -name "*.pl" -exec ls -ld {} \;   # run ls command on files found
     find . -type f -iname ".python-version" -print -exec sed -i 's/3.10.5/3.10.6/g' {} \;
+```
+
+#### Find and replace(sed)
+
+```
+    find templates -name "*.html" -type f -exec sed -i 's/javascript:/#\"\ onclick=\"/g' {} \;
+```
 
 #### Find and copy
 
+```
     find . -type f -name "*.mp3" -exec cp {} ~/tmp/ \; # cp files to ~/tmp/
+```
 
 #### Copy one file to many directories
 
@@ -424,6 +453,7 @@ its respective elements:
     find . -type f -name "Foo*" -exec rm {} \;   # remove "Foo*" files under current dir
     find . -type d -name CVS -exec rm -r {} \;   # remove subdirectories named "CVS" under current dir
     find . -name ".mediaartlocal" -type d -exec rm -r '{}' \; 
+
 
 #### Files by modification time
 
@@ -441,20 +471,27 @@ its respective elements:
 
 #### find and tar
 
+```
     find . -type f -name "*.java" | xargs tar cvf myfile.tar
     find . -type f -name "*.java" | xargs tar rvf myfile.tar
+```
 
 #### find, tar, and xargs
 
+```
     find . -name -type f '*.mp3' -mtime -180 -print0 | xargs -0 tar rvf music.tar
+```
+    
 
      (-print0 helps handle spaces in filenames)
 
 #### Rename
 
+```
     find . -name "folder.jpg" -type f -execdir mv {} cover.jpg \;
     find ~ -iname "*new*" -exec mv -v '{}' /media/current-projects/ \;
     find . -type f -name "*.wiki" -exec rename 's/\.wiki$/.md/' '{}' \;
+```
 
 ---
 
