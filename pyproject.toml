@@ -17,18 +17,19 @@ package-mode = false
 
 [tool.poetry.group.dev.dependencies]
 black = ">=24.0, <25.0"
+coverage = { version = ">=7.0.0, <8.0.0", extras = ["toml"] }
 flake8 = "^7.0"
-pre-commit = ">=4.0, <5.0"
-safety = "^2.0"
-flake8-black = "^0.3.3"
 flake8-bandit = "^4.1.1"
-nox = "^2022.8.7"
+flake8-black = "^0.3.3"
 flake8-import-order = "^0.18.1"
+nox = "^2022.8.7"
+pip-audit = ">=2.9.0, <3.0.0"
+pre-commit = ">=4.0, <5.0"
 pytest = ">=8.0, <8.4"
 pytest-cov = ">=6.0.0, <7.0"
-coverage = { version = ">=7.0.0, <8.0.0", extras = ["toml"] }
-pip-audit = ">=2.9.0, <3.0.0"
-Sphinx = "^5.3.0"
+safety = "^2.0"
+sphinx = ">= 8.0, <9.0"
+sphinx-lint = "1.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0"]
