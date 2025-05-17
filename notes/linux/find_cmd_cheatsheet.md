@@ -1,41 +1,62 @@
-# Cheatsheet for find command
+# Linux find command reference and cookbook
+### Using the Linux find command with examples
 
 Looking for a specific command?  
 Jump to the [Examples](#examples) section.
+
 
   * [Introduction](#introduction)
   * [Name](#name)
   * [Description](#description)
   * [Synopsis](#synopsis)
   * [Options](#options)
-  * [Expression](#expression)
-      * [Example directory structure](#example-directory-structure)
+  * [Expressions](#expressions)
+    * [Example Directory Structure](#example-directory-structure)
     * [Test Expressions](#test-expressions)
-      * [Filtering empty file](#filtering-empty-file)
-      * [Filtering by file name](#filtering-by-file-name)
-      * [Filtering by file path](#filtering-by-file-path)
-      * [Filtering using a regex](#filtering-using-a-regex)
+      * [Filtering Empty File](#filtering-empty-file)
+      * [Filtering by File Name](#filtering-by-file-name)
+      * [Filtering by File Path](#filtering-by-file-path)
+      * [Filtering Using a Regex](#filtering-using-a-regex)
       * [Case insensitive search](#case-insensitive-search)
-      * [Filtering by type of file](#filtering-by-type-of-file)
-      * [Filtering by permissions](#filtering-by-permissions)
-      * [Filtering by owner or group](#filtering-by-owner-or-group)
+      * [Filtering by Type of File](#filtering-by-type-of-file)
+      * [Filtering by Permissions](#filtering-by-permissions)
+      * [Filtering by Owner or Group](#filtering-by-owner-or-group)
     * [Action Expressions](#action-expressions)
-      * [Deleting files](#deleting-files)
-      * [Running a command on each result](#running-a-command-on-each-result)
-      * [Running a command in working directory](#running-a-command-in-working-directory)
-      * [Running a command in starting directory](#running-a-command-in-starting-directory)
-      * [Changing the output](#changing-the-output)
-      * [Writing the output to a file](#writing-the-output-to-a-file)
+      * [Deleting Files](#deleting-files)
+      * [Running a Command on Each Result](#running-a-command-on-each-result)
+      * [Running a Command in Working Directory](#running-a-command-in-working-directory)
+      * [Running a Command in Starting Directory](#running-a-command-in-starting-directory)
+      * [Changing the Output](#changing-the-output)
+      * [Writing the Output to a File](#writing-the-output-to-a-file)
     * [Operators](#operators)
   * [Examples](#examples)
-  * [Resources](#resources)
+    * [Find command structure](#find-command-structure)
+    * [Basic `find` file commands](#basic-`find`-file-commands)
+    * [Case insensitive search](#case-insensitive-search)
+    * [Search multiple directories](#search-multiple-directories)
+    * [Files with different extensions](#files-with-different-extensions)
+    * [Files that don't match a pattern (-not)](#files-that-don't-match-a-pattern-(-not))
+    * [Files by text in the file (find + grep)](#files-by-text-in-the-file-(find-+-grep))
+    * [5 lines before, 10 lines after grep matches](#5-lines-before,-10-lines-after-grep-matches)
+    * [Files and act on them (find + exec)](#files-and-act-on-them-(find-+-exec))
+    * [Find and replace(sed)](#find-and-replace(sed))
+    * [Find and copy](#find-and-copy)
+    * [Copy one file to many directories](#copy-one-file-to-many-directories)
+    * [Find and delete](#find-and-delete)
+    * [Files by modification time](#files-by-modification-time)
+    * [By modification time using a temp file](#by-modification-time-using-a-temp-file)
+    * [find and tar](#find-and-tar)
+    * [find, tar, and xargs](#find,-tar,-and-xargs)
+    * [Rename](#rename)
+  * [Further Reading](#further-reading)
 
 ---
 
 ### Introduction
 
+Even though I use [fzf - fuzzy finder](https://github.com/junegunn/fzf) and have [integrated it into my shell](https://suburbanalities.blogspot.com/2025/03/integrating-fzf-with-bash-shell.html), I continue to use the traditional [find](https://www.gnu.org/software/findutils/) tool.
 The following document provides an overview of some of the details regarding the use of the Linux `find` command as well as a cookbook of practical examples demonstrating the use of the command.  
-The first portion of the document consists of details and explanations from the `man` pages for find as well as some summaries of the details regarding the usage of the `find` command.  
+The first portion of the document consists of details and explanations from the `man` pages for `find` as well as some summaries of the details regarding the usage of the `find` command.  
 The second part consists of practical examples of `find` usages to solve specific search & action requirements.
 
 
@@ -70,7 +91,7 @@ The command has, essentially, three sections which can be briefly summarized as:
 
     find <options> <starting-point> <expression>
    
-  - *[options\]* - The  `-H`,  `-L`  and `-P` options control the treatment of symbolic links. The `-D` and `-O` options control diagnostic output and query optimisations, respectively.
+  - *[options\]* - The  `-H`,  `-L`  and `-P` options control the treatment of symbolic links. The `-D` and `-O` options control diagnostic output and query optimizations, respectively.
   - *[starting-point\]* - List of directories where to search
   - *[expression\]* - Expressions filter the search or perform actions on the
   files found.
@@ -90,13 +111,9 @@ Technically, the *options* and *actions* are all known as ***find primaries***.
 
 >   The  `-H`,  `-L`  and `-P` options control the treatment of symbolic links. Command-line arguments following these are taken to be names of files or directories to be examined, up to the first argument that begins with `-`, or the argument `(` or `!`. That argument and any following arguments are taken to be the expression describing what is to be searched for. If no paths are given, the current directory is used. If no expression is given, the expression `-print` is used.
 
-  `-P` Never follow symbolic links.
-  
-  `-L` Follow symbolic links.
-  
-  `-H` Do not follow symbolic links, except while processing command line
-  arguments.
-  
+  `-H` Do not follow symbolic links, except while processing command line arguments.  
+  `-L` Follow symbolic links.  
+  `-P` Never follow symbolic links.  
   `-D debugopts` Print diagnostic information. For a complete list of valid
   debug options, see the output of `find -D help`.
 
@@ -110,28 +127,31 @@ Technically, the *options* and *actions* are all known as ***find primaries***.
     - all        Set all of the debug flags (but help)
     - help       Explain the various -D options  
   
-  `Olevel` Enables query optimisation. The `find` program reorders tests to
+  `Olevel` Enables query optimization. The `find` program reorders tests to
   speed up execution while preserving the overall effect.
-  
   
 For example:
 
-    find -O3 -name example.txt -type f -execdir mv {} test.txt \;
-  
-See [Find Debug Notes](find_cmd_debug_session_notes.md) for examples.
+    find -D exec -name test.txt -type f -execdir mv {} example.txt \;
+
+Results:
+
+    DebugExec: launching process (argc=3): ‘mv’ ‘./test.txt’ ‘example.txt’
+    DebugExec: process (PID=25192) terminated with exit status: 0
+
 
 As with all items outlined here, refer to [`man find`](https://manned.org/find) for additional, specific details.
 
 ---
 
-### Expression
+### Expressions
 
 The part of the command line after the list of starting points is the *expression*. This is  a kind of query specification describing how we match files and what we do with the files that were matched. An expression is composed of a sequence of things:
 
   - Test expressions
-    - Tests return a true or false value, usually on the basis of some property of a file  we are considering. The `-empty` test for example is true only when the current file is empty.
+    - Tests return a true or false value, usually on the basis of some property of a file we are considering. The `-empty` test for example is true only when the current file is empty.
   - Action expressions
-    - Actions have side effects (such as printing something on the standard output)  and return either true or false, usually based on whether or not they are successful. The `-print` action for example prints the name of the current file on the standard output.
+    - Actions have side effects (such as printing something on the standard output) and return either true or false, usually based on whether or not they are successful. The `-print` action for example prints the name of the current file on the standard output.
   - Global options
     - Global options affect the operation of tests and actions specified on any part of the command line. Global options always return true. The `-depth` option for example makes `find` traverse the file system in a depth-first order.
   - Positional options
@@ -141,42 +161,41 @@ The part of the command line after the list of starting points is the *expressio
 
 When using multiple expressions without specifying any operator, the **AND** operator is implicitly used.
 
-##### Example Directory Structure
+#### Example Directory Structure
 
-Many of the examples that follow will be using the directory structure below:
+For rest of this post, many of the examples will be using the directory structure below. If you want to follow along with the examples, re-create this on your local machine.
 
 ```
-            .testdir        # (root/current working directory)
-            ├── example.txt
-            ├── image.jpg
-            ├── topdir1
-            │   ├── dir_a
-            │   │   └── image.jpg
-            │   ├── dir_b
-            │   │   ├── example.txt
-            │   │   └── image.jpg
-            │   ├── dir_c
-            │   └── image.jpg
-            ├── topdir2
-            │   ├── dir_a
-            │   │   └── image.jpg
-            │   ├── dir_b
-            │   ├── dir_c
-            │   │   └── image.jpg
-            │   ├── myfile.txt
-            │   └── myfile1.txt
-            └── topdir3
-                ├── dir_a
-                │   └── image.jpg
-                ├── dir_b
-                │   └── MyFile.txt
-                └── image.jpg
-                
-# Note: for the purposes of the examples in this document, the `folder.jpg` & `myfile1.txt` should *not* be empty files. Use an actual file containing an image/text of any size. 
+            .testdir        # (root/current working directory)  
+            ├── example.txt  
+            ├── image.jpg  
+            ├── topdir1  
+            │   ├── dir_a  
+            │   │   └── image.jpg  
+            │   ├── dir_b  
+            │   │   ├── example.txt  
+            │   │   └── image.jpg  
+            │   ├── dir_c  
+            │   └── image.jpg  
+            ├── topdir2  
+            │   ├── dir_a  
+            │   │   └── image.jpg  
+            │   ├── dir_b  
+            │   ├── dir_c  
+            │   │   └── image.jpg  
+            │   ├── myfile.txt  
+            │   └── myfile1.txt  
+            └── topdir3  
+                ├── dir_a  
+                │   └── image.jpg  
+                ├── dir_b  
+                │   └── MyFile.txt  
+                └── image.jpg  
 ```
 
-Here is a basic example that decomposes a simple `find` command construct and
-its respective elements:
+**Note**: for the purposes of the examples in this document, the `folder.jpg` & `myfile1.txt` should *not* be empty files. Use an actual file containing an image/text of any size. 
+
+Here is a basic example that breaks down a simple `find` command example into its respective elements:
 
     find topdir2 -name "myfile.txt" -perm 644
     
@@ -198,7 +217,7 @@ The `-empty` option will search only empty files and directories. It does not ne
 
 ##### Filtering by File Name
 
-The expression `-name <value>` filter files and directories by filename. Regular expressions are not allowed for the `<value>`, but shell patterns (also called *glob operators*) are permitted, such as `*`, `?`, or `[]`.
+The expression `-name <value>` filter files and directories by file name. Regular expressions are not allowed for the `<value>`, but shell patterns (also called *glob operators*) are permitted, such as `*`, `?`, or `[]`.
 
 ```
     find . -name '*.txt'
@@ -215,7 +234,7 @@ The expression `-path <value>` filters files and directories by their file paths
     
 ##### Filtering Using a Regex
 
-File name matches regular expression *pattern* using `-regex <value>`. This is a match on the whole path, not a search. For example, to match a file named *./fubar*, you can use the regular expression `.*bar.` or `.*b.*3`, but not `f.*r3`
+File name matches regular expression *pattern* using `-regex <value>`. This is a match on the whole path, not a search. For example, to match a file named *./foobar*, you can use the regular expression `.*bar.` or `.*b.*3`, but not `f.*r3`
 
 ```
     find . -regex '.*1.txt'
@@ -230,7 +249,7 @@ valid types are ‘findutils-default’, ‘ed’, ‘emacs’, ‘gnu-awk’, �
 ‘posix-minimal-basic’, ‘sed’.
 ```
 
-The following example will find every text and jpg file using `egrep`, the extended regular expresion engine(ERE):
+The following example will find every `txt` and `jpg` file using `egrep`, the extended regular expression engine(ERE):
 
 ```
     find . -regextype "egrep" -regex '.*(txt|jpg)$'
@@ -257,8 +276,8 @@ To search for more than one type at once, separate the options by a comma `,`.
 
 Files can be filtered by whether they are `-executable`, `-readable`, or `writeable` for the current user. For additional granularity, you can use `-perm <value>`, where `<value>` can be:
 
-  - A string beginning with `/` and followed by a series of rules using the **OR** boolean operator. For example, `-perm /u=w,g=e` (writable by the owner, *and* executable by the group).
-  - A string beginning with `-` and followed by a series of rules using the **AND** boolean operator. For example, `-perm -u=w,g=e` (writable by owner, *or* executable by the group).
+  - A string beginning with `/` and followed by a series of rules using the **OR** Boolean operator. For example, `-perm /u=w,g=e` (writable by the owner, *and* executable by the group).
+  - A string beginning with `-` and followed by a series of rules using the **AND** Boolean operator. For example, `-perm -u=w,g=e` (writable by owner, *or* executable by the group).
   - An octal number, for example: `644`.
 
 ##### Filtering by Owner or Group
@@ -289,7 +308,7 @@ The `-exec` expression *executes* a command. The string `{}` is replaced by the 
   - `find . -exec bash -c 'basename "${0%.*}"' '{}' \;` - The command `bash -c` will allow us to expand parameters. `${0%.*}` is used here to remove the file extension from each result.
   - `find . -name 'image.jpg' -exec file {} \;` - Run the `file` command against all `.jpg` files returned from the search.
 
-You can also use the expression `-ok`. It is the same a the `-exec` option, except that find will prompt you, asking if you really want to run the command.  This confirmation will be asked for each result.
+You can also use the expression `-ok`. It is the same as the `-exec` option, except that find will prompt you, asking if you really want to run the command.  This confirmation will be asked for each result.
 
     find . -name "image.jpg" -ok file {} \;
 
@@ -297,14 +316,11 @@ You can also use the expression `-ok`. It is the same a the `-exec` option, exce
 
 
 The two expressions `-execdir` and `-okdir` work like `-exec` and `-ok` respectively, except that the commands won’t run in your current working directory, but in the starting directory (the first argument of find).
-
-
 ```
     find topdir1/dir_b -exec bash -c 'basename "${0%*.}"' '{}' \;
 ```
     
-Rename every jpg file in the `topdir1` directory with `_old` and keep same extension:
-
+Rename every `.jpg` file in the `topdir1` directory with `_old` and keep same extension:
 ```
     find topdir1 -name "image.jpg" -type f -execdir rename 's/\.jpg$/_old.jpg/' {} \;
 ```
@@ -316,7 +332,7 @@ The following options will change the output of the search results:
   - `-print` - This is the default action even when not specified. It simply prints every result.
   - `-ls` - Works like the regular `ls` command.
   - `-print0` - By default, the separator between different results is a `\n` newline character. With this option, the separator is a null character. Useful if you want to pipe results to `xargs -0`.
-  - `-printf` - Output files with the information you need. For example: `find . -printf %d %p` will print the depth of the file in the file tree (`%d`) and the filename (`%p`).
+  - `-printf` - Output files with the information you need. For example: `find . -printf %d %p` will print the depth of the file in the file tree (`%d`) and the file name (`%p`).
 
 ##### Writing the Output to a File
 
@@ -326,7 +342,7 @@ You can also use a bunch of action expressions to write find’s output to a fil
 #### Operators
 
 When no operators are explicitly specified, the `-and` operator is used
-implicity between each expression.
+implicitly between each expression.
 
   - `!` - Negate the expression following it.
   - `-or` or `-o` - Logical `OR`.
@@ -343,13 +359,13 @@ implicity between each expression.
   * [Find command structure](#find-command-structure)
   * [Basic `find` file commands](#basic-`find`-file-commands)
   * [Case insensitive search](#case-insensitive-search)
-  * [Search multiple dirs](#search-multiple-dirs)
+  * [Search multiple directories](#search-multiple-dirs)
   * [Files with different extensions](#files-with-different-extensions)
   * [Files that don't match a pattern (-not)](#files-that-don't-match-a-pattern-(-not))
   * [Files by text in the file (find + grep)](#files-by-text-in-the-file-(find-+-grep))
   * [5 lines before, 10 lines after grep matches](#5-lines-before,-10-lines-after-grep-matches)
   * [Files and act on them (find + exec)](#files-and-act-on-them-(find-+-exec))
-  * [Find and replace(sed)](#find-and-replace(sed))
+  * [Find and replace(using sed)](#find-and-replace(sed))
   * [Find and copy](#find-and-copy)
   * [Copy one file to many directories](#copy-one-file-to-many-directories)
   * [Find and delete](#find-and-delete)
@@ -392,7 +408,7 @@ its respective elements:
     find . -iname foo -type d                       # same thing, but only dirs
     find . -iname foo -type f                       # same thing, but only files
 
-#### Search multiple dirs
+#### Search multiple directories
 
     find /opt /usr /var -name foo.scala -type f
 
@@ -495,10 +511,12 @@ its respective elements:
 
 ---
 
-### Resources
+### Further Reading
 
 Most the information & examples provided above were originally sourced from the following resources:
 
+  - [GNU Findutils Homepage](https://www.gnu.org/software/findutils/)
+  - [Findutils Online Manual](https://www.gnu.org/software/findutils/manual/html_mono/find.html)
   - [Linux man page - find](https://manned.org/find)
   - [Alvin Alexander - find](https://alvinalexander.com/unix/edu/examples/find.shtml)
   - [The Mouseless Dev](https://themouseless.dev/posts/find-guide-example-mouseless/)
