@@ -8,13 +8,14 @@
 
 </div>
 
- - A collection of scripts, utilities, templates, and tech notes
+- A collection of scripts, utilities, templates, and tech notes
 
-##### Table of Contents
- - [Features](#features)
- - [Installation](#installation)
- - [Testing](#testing)
- - [Reporting Bugs](#reporting-bugs)
+### Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Testing](#testing)
+- [Reporting Bugs](#reporting-bugs)
 
 ---
 
@@ -25,11 +26,11 @@
 ---
 
 ### Installation
- - `git clone https://github.com/kevinbowen777/toolbox.git`
- - `cd toolbox`
- - Local installation:
-     - `poetry shell`
-     - `poetry install`
+
+- `git clone https://github.com/kevinbowen777/toolbox.git`
+- `cd toolbox`
+- Local installation:
+    - `poetry install`
 
 ---
 
